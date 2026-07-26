@@ -201,6 +201,10 @@ struct App {
     bool internalChange = false;
     ComPtr<ITextDocument> tom;
 
+    // Viewer: the logical width the last stream's code-block boxes fill —
+    // re-streamed (debounced) when the control's width or zoom changes.
+    float streamedContentWidth = 0;
+
     // Find bar
     bool findOpen = false;
     std::wstring findQuery;
@@ -331,6 +335,10 @@ struct Builder {
     /// Print builds turn the code-block header (language + copy glyph) off —
     /// paper gets the code alone, matching the macOS print path.
     bool codeChrome = true;
+    /// Code-block boxes are RichEdit tables, and table cells are absolute
+    /// widths — the caller supplies the width the boxes should fill, in the
+    /// builder's logical 96-dpi px.
+    float contentWidthPx = 672;
     int imageCount = 0;
 
     static int HalfPt(float px) { return (int)(px * 0.75f * 2 + 0.5f); }
@@ -516,19 +524,29 @@ struct Builder {
     }
 
     /// A fenced code block as a distinct full-width tinted box (the macOS
-    /// viewer's rounded box, minus the rounding RTF can't express): paragraph
-    /// shading (\cbpat) fills the box where the control supports it, with the
-    /// glyph-level highlight kept underneath as the everywhere-fallback. A
-    /// header line inside the box carries the fence language and a copy
-    /// glyph; print builds skip it.
+    /// viewer's rounded box, minus the rounding RTF can't express). The
+    /// inbox RichEdit ignores paragraph shading (\cbpat) but does fill table
+    /// cells, so the box is a single-cell table row shaded with \clcbpat;
+    /// cell borders are painted in the box color because the control insists
+    /// on drawing gridlines. The glyph-level highlight stays underneath as
+    /// the everywhere-fallback. A header line inside the box carries the
+    /// fence language and a copy glyph; print builds skip it.
     void CodeBlock(const md::Block& block, float depth, int baseColor)
     {
-        char buf[128];
-        float indent = depth * 24 + 12;
+        char buf[256];
+        int left = Twips(depth * 24);
+        int right = std::max(left + Twips(96), Twips(contentWidthPx - 12));
+        sprintf_s(buf,
+                  "\\trowd\\trgaph%d\\trleft%d"
+                  "\\clbrdrt\\brdrs\\brdrw1\\brdrcf%d\\clbrdrl\\brdrs\\brdrw1\\brdrcf%d"
+                  "\\clbrdrb\\brdrs\\brdrw1\\brdrcf%d\\clbrdrr\\brdrs\\brdrw1\\brdrcf%d"
+                  "\\clcbpat%d\\cellx%d\n",
+                  Twips(12), left, ColCodeBg, ColCodeBg, ColCodeBg, ColCodeBg, ColCodeBg,
+                  right);
+        out += buf;
         if (codeChrome) {
             codeTexts.push_back(block.code);
-            sprintf_s(buf, "\\pard\\li%d\\ri%d\\sb%d\\sa0\\qr\\cbpat%d ", Twips(indent),
-                      Twips(12), Twips(8), ColCodeBg);
+            sprintf_s(buf, "\\pard\\intbl\\sb%d\\sa0\\qr ", Twips(8));
             out += buf;
             if (!block.lang.empty()) {
                 Run(block.lang + L"  ", 10, false, false, false, true, ColSecondary, true);
@@ -540,11 +558,15 @@ struct Builder {
             out += buf;
             out += "\\par\n";
         }
-        sprintf_s(buf, "\\pard\\li%d\\ri%d\\sb0\\sa%d\\sl-%d\\slmult0\\cbpat%d ", Twips(indent),
-                  Twips(12), Twips(8), LinePitchTwips(13), ColCodeBg);
+        sprintf_s(buf, "\\pard\\intbl\\sb%d\\sa%d\\sl-%d\\slmult0 ",
+                  codeChrome ? 0 : Twips(8), Twips(8), LinePitchTwips(13));
         out += buf;
         Run(block.code, 13, false, false, false, true, baseColor, true);
-        out += "\\par\n";
+        out += "\\cell\\row\n";
+        // The row swallows its paragraph spacing; a thin empty paragraph
+        // restores the 8px gap to the next block.
+        sprintf_s(buf, "\\pard\\sb0\\sa0\\sl-%d\\slmult0\\fs2\\par\n", Twips(8));
+        out += buf;
     }
 
     /// Peeled YAML frontmatter as a compact metadata block: a two-column
@@ -878,6 +900,21 @@ static void UpdateTitle()
 static void UpdateFindCounts();
 static void InvalidateBars();
 
+/// The width code-block boxes should fill, in the RTF builder's logical
+/// 96-dpi px (the control scales twips by dpi × zoom at render time).
+static float ViewerContentWidthPx()
+{
+    RECT rc;
+    GetClientRect(g_app.richEdit, &rc);
+    int width = rc.right;
+    // While the scrollbar is hidden its strip is part of the client width;
+    // reserve it so the bar appearing after the stream doesn't clip the box.
+    if (!(GetWindowLongW(g_app.richEdit, GWL_STYLE) & WS_VSCROLL)) {
+        width -= GetSystemMetrics(SM_CXVSCROLL);
+    }
+    return std::max(240.0f, width / g_app.dpi / g_app.zoom);
+}
+
 /// Viewer mode: parse + build RTF + stream into the control.
 static void StreamDocument(bool preserveScroll)
 {
@@ -896,6 +933,8 @@ static void StreamDocument(bool preserveScroll)
 
     rtf::Builder builder;
     builder.theme = &g_app.theme;
+    builder.contentWidthPx = ViewerContentWidthPx();
+    g_app.streamedContentWidth = builder.contentWidthPx;
     builder.Build(blocks, hasFrontmatter ? &frontmatter : nullptr);
     clockmarks::Mark(L"rtf");
 
@@ -1519,6 +1558,9 @@ static void SetZoom(float zoom)
     g_app.zoom = zoom;
     SendMessageW(g_app.richEdit, EM_SETZOOM, (WPARAM)(zoom * 100 + 0.5f), 100);
     SendMessageW(g_app.zoomSlider, TBM_SETPOS, TRUE, (LPARAM)(zoom * 100 + 0.5f));
+    // Zoom shrinks/grows the logical width code-block boxes must fill;
+    // re-stream once the slider settles (timer 2, shared with WM_SIZE).
+    if (g_app.mode == Mode::Viewer) SetTimer(g_app.hwnd, 2, 150, nullptr);
     InvalidateBars();
 }
 
@@ -1649,12 +1691,21 @@ static void PrintInteractive()
         return;
     }
 
+    // Page and render rects are in twips (1/1440 inch); ¾" margins all
+    // around. The printable width is needed up front — code-block boxes are
+    // built to fill it.
+    HDC dc = dialog.hDC;
+    const LONG margin = 1440 * 3 / 4;
+    LONG pageWidth = MulDiv(GetDeviceCaps(dc, PHYSICALWIDTH), 1440,
+                            GetDeviceCaps(dc, LOGPIXELSX));
+
     Theme light = LightTheme();
     md::Frontmatter frontmatter;
     bool hasFrontmatter = md::ExtractFrontmatter(g_app.doc.text, frontmatter);
     rtf::Builder builder;
     builder.theme = &light;
     builder.codeChrome = false; // paper gets the code alone, no copy glyph
+    builder.contentWidthPx = (pageWidth - 2 * margin) / 15.0f;
     builder.Build(hasFrontmatter ? md::Parse(frontmatter.body, frontmatter.lineOffset + 1)
                                  : md::Parse(g_app.doc.text),
                   hasFrontmatter ? &frontmatter : nullptr);
@@ -1668,15 +1719,11 @@ static void PrintInteractive()
     info.cbSize = sizeof(info);
     info.lpszDocName = name.c_str();
 
-    HDC dc = dialog.hDC;
     FORMATRANGE range{};
     range.hdc = dc;
     range.hdcTarget = dc;
-    // Page and render rects are in twips (1/1440 inch); ¾" margins all around.
-    range.rcPage = { 0, 0,
-                     MulDiv(GetDeviceCaps(dc, PHYSICALWIDTH), 1440, GetDeviceCaps(dc, LOGPIXELSX)),
+    range.rcPage = { 0, 0, pageWidth,
                      MulDiv(GetDeviceCaps(dc, PHYSICALHEIGHT), 1440, GetDeviceCaps(dc, LOGPIXELSY)) };
-    const LONG margin = 1440 * 3 / 4;
     range.rc = { range.rcPage.left + margin, range.rcPage.top + margin,
                  range.rcPage.right - margin, range.rcPage.bottom - margin };
 
@@ -2266,6 +2313,9 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SIZE:
         LayoutBars();
+        // Code-block boxes are absolute-width tables; once the resize
+        // settles, re-stream the viewer if its width actually changed.
+        if (g_app.mode == Mode::Viewer) SetTimer(hwnd, 2, 150, nullptr);
         InvalidateRect(hwnd, nullptr, TRUE);
         return 0;
 
@@ -2459,6 +2509,16 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     }
 
     case WM_TIMER:
+        // Debounced resize/zoom: code-block boxes are streamed at a fixed
+        // width, so a changed viewer width means a rebuild.
+        if (wp == 2) {
+            KillTimer(hwnd, 2);
+            if (g_app.mode == Mode::Viewer) {
+                float delta = ViewerContentWidthPx() - g_app.streamedContentWidth;
+                if (delta >= 1.0f || delta <= -1.0f) StreamDocument(true);
+            }
+            return 0;
+        }
         // External writers (other editors, git, scripts): a clean document
         // reloads automatically; unsaved edits are never touched.
         if (wp == 1 && g_app.mode == Mode::Viewer && !g_app.doc.dirty
