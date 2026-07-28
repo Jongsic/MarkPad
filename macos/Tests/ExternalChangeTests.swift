@@ -32,8 +32,12 @@ final class ExternalChangeTests: XCTestCase {
                 writeError = error
             }
         }
-        if let coordinatorError { throw coordinatorError }
-        if let writeError { throw writeError }
+        if let coordinatorError {
+            throw coordinatorError
+        }
+        if let writeError {
+            throw writeError
+        }
     }
 
     private func openDocument(at url: URL) throws -> MarkdownDocument {

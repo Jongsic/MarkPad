@@ -64,8 +64,12 @@ private func blockLinesLookLikeYAML(_ lines: [String]) -> Bool {
           !first.hasPrefix("- "), first.contains(":")
     else { return false }
     return lines.dropFirst().allSatisfy { line in
-        if line.isEmpty { return false }
-        if line.first == " " || line.first == "\t" { return true }
+        if line.isEmpty {
+            return false
+        }
+        if line.first == " " || line.first == "\t" {
+            return true
+        }
         return line.hasPrefix("- ") || line.contains(":")
     }
 }
@@ -79,9 +83,13 @@ private func parseFlatProperties(_ lines: [String]) -> [(key: String, value: Str
     while index < lines.count {
         let line = lines[index]
         index += 1
-        if line.trimmingCharacters(in: .whitespaces).isEmpty { continue }
+        if line.trimmingCharacters(in: .whitespaces).isEmpty {
+            continue
+        }
         // A top-level key must not be indented.
-        if line.first == " " || line.first == "\t" { return nil }
+        if line.first == " " || line.first == "\t" {
+            return nil
+        }
         guard let colon = line.firstIndex(of: ":") else { return nil }
         let key = String(line[..<colon]).trimmingCharacters(in: .whitespaces)
         guard !key.isEmpty else { return nil }

@@ -144,11 +144,15 @@ final class MarkdownDocument: NSDocument {
         guard newText != text else { return }
         let previous = text
         let needsGroup = undoManager.map { $0.groupingLevel == 0 } ?? false
-        if needsGroup { undoManager?.beginUndoGrouping() }
+        if needsGroup {
+            undoManager?.beginUndoGrouping()
+        }
         undoManager?.registerUndo(withTarget: self) { document in
             document.setTextUndoable(previous)
         }
-        if needsGroup { undoManager?.endUndoGrouping() }
+        if needsGroup {
+            undoManager?.endUndoGrouping()
+        }
 
         let changeKind: NSDocument.ChangeType = if undoManager?.isUndoing == true {
             .changeUndone

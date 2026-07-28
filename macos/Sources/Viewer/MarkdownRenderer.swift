@@ -47,13 +47,21 @@ func markdownNestingExceedsLimit(
     var runLength = 0
     for byte in source.utf8 {
         if byte == 0x2A || byte == 0x5F || byte == 0x7E { // * _ ~
-            if byte == runByte { runLength += 1 } else { runByte = byte; runLength = 1 }
-            if runLength > runLimit { return true }
+            if byte == runByte {
+                runLength += 1
+            } else {
+                runByte = byte; runLength = 1
+            }
+            if runLength > runLimit {
+                return true
+            }
         } else {
             runByte = 0; runLength = 0
         }
         if byte == 0x0A { // newline — a line made only of markers still counts
-            if quotes + spaces / 2 > blockLimit { return true }
+            if quotes + spaces / 2 > blockLimit {
+                return true
+            }
             atLineStart = true; quotes = 0; spaces = 0
             continue
         }
@@ -63,7 +71,9 @@ func markdownNestingExceedsLimit(
             case 0x09: spaces += 4 // tab
             case 0x3E: quotes += 1; spaces = 0 // '>'
             default:
-                if quotes + spaces / 2 > blockLimit { return true }
+                if quotes + spaces / 2 > blockLimit {
+                    return true
+                }
                 atLineStart = false
             }
         }
@@ -217,7 +227,9 @@ final class MarkdownRenderer {
         let rows = NSMutableAttributedString()
         var first = true
         for property in properties {
-            if !first { rows.append(NSAttributedString(string: "\n", attributes: bodyAttributes)) }
+            if !first {
+                rows.append(NSAttributedString(string: "\n", attributes: bodyAttributes))
+            }
             first = false
             rows.append(NSAttributedString(string: property.key, attributes: keyAttributes))
             rows.append(NSAttributedString(string: "\t", attributes: bodyAttributes))
@@ -331,7 +343,9 @@ final class MarkdownRenderer {
             let content = NSMutableAttributedString()
             var first = true
             for child in quote.children {
-                if !first { content.append(NSAttributedString(string: "\n")) }
+                if !first {
+                    content.append(NSAttributedString(string: "\n"))
+                }
                 content.append(renderBlock(child, depth: depth + 1))
                 first = false
             }
@@ -377,7 +391,9 @@ final class MarkdownRenderer {
         var first = true
 
         for (index, item) in items.enumerated() {
-            if !first { result.append(NSAttributedString(string: "\n")) }
+            if !first {
+                result.append(NSAttributedString(string: "\n"))
+            }
             first = false
 
             var prefixAttributes = bodyAttributes
@@ -404,7 +420,9 @@ final class MarkdownRenderer {
                     line.append(NSAttributedString(string: "\n"))
                     line.append(renderBlock(child, depth: depth + 1))
                 } else {
-                    if !itemFirst { line.append(NSAttributedString(string: "\n")) }
+                    if !itemFirst {
+                        line.append(NSAttributedString(string: "\n"))
+                    }
                     line.append(renderInlineContainer(child, attributes: bodyAttributes))
                 }
                 itemFirst = false
@@ -477,7 +495,9 @@ final class MarkdownRenderer {
         func gridRow(_ cells: [NSAttributedString]) -> NSAttributedString {
             let line = NSMutableAttributedString()
             for (index, cell) in cells.enumerated() {
-                if index > 0 { line.append(NSAttributedString(string: "\t", attributes: bodyAttributes)) }
+                if index > 0 {
+                    line.append(NSAttributedString(string: "\t", attributes: bodyAttributes))
+                }
                 line.append(cell)
             }
             line.addAttribute(.paragraphStyle, value: rowStyle, range: NSRange(location: 0, length: line.length))
@@ -636,8 +656,12 @@ final class MarkdownRenderer {
     private func applying(_ traits: NSFontDescriptor.SymbolicTraits, to font: NSFont) -> NSFont {
         // Fast path for the overwhelmingly common case: styling body text.
         if font === bodyFont {
-            if traits == .bold { return boldBodyFont }
-            if traits == .italic { return italicBodyFont }
+            if traits == .bold {
+                return boldBodyFont
+            }
+            if traits == .italic {
+                return italicBodyFont
+            }
         }
         return Self.applying(traits, to: font)
     }

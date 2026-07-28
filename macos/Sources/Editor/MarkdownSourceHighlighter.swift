@@ -121,7 +121,9 @@ final class MarkdownSourceHighlighter {
     private func shouldConceal(nodeRange: NSRange, revealing: NSRange?, text: NSString) -> Bool {
         guard let revealing else { return true }
         let paragraph = text.paragraphRange(for: nodeRange)
-        if NSLocationInRange(revealing.location, paragraph) { return false } // caret (possibly empty range)
+        if NSLocationInRange(revealing.location, paragraph) {
+            return false
+        } // caret (possibly empty range)
         return NSIntersectionRange(paragraph, revealing).length == 0
     }
 

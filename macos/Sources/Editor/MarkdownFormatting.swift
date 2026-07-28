@@ -99,7 +99,9 @@ enum MarkdownFormatting {
             if allNumbered {
                 return stripNumber(line) ?? line
             }
-            if line.isEmpty { return line }
+            if line.isEmpty {
+                return line
+            }
             number += 1
             return "\(number). " + (stripNumber(line) ?? stripBullet(line) ?? stripChecklist(line) ?? line)
         }
@@ -114,7 +116,9 @@ enum MarkdownFormatting {
             if allPrefixed {
                 return strip(line) ?? line
             }
-            if line.isEmpty { return line }
+            if line.isEmpty {
+                return line
+            }
             return prefix + (strip(line) ?? line)
         }
     }
@@ -172,7 +176,9 @@ enum MarkdownFormatting {
         let lineRange = text.lineRange(for: selection)
         var content = text.substring(with: lineRange)
         let hadTrailingNewline = content.hasSuffix("\n")
-        if hadTrailingNewline { content.removeLast() }
+        if hadTrailingNewline {
+            content.removeLast()
+        }
         let replacement = "```\n\(content)\n```" + (hadTrailingNewline ? "\n" : "")
         return Edit(
             range: lineRange,
@@ -187,7 +193,9 @@ enum MarkdownFormatting {
     private static func selectedLines(_ text: NSString, selection: NSRange) -> [String] {
         let lineRange = text.lineRange(for: selection)
         var content = text.substring(with: lineRange)
-        if content.hasSuffix("\n") { content.removeLast() }
+        if content.hasSuffix("\n") {
+            content.removeLast()
+        }
         return content.components(separatedBy: "\n")
     }
 
@@ -197,7 +205,9 @@ enum MarkdownFormatting {
         let lineRange = text.lineRange(for: selection)
         var content = text.substring(with: lineRange)
         let hadTrailingNewline = content.hasSuffix("\n")
-        if hadTrailingNewline { content.removeLast() }
+        if hadTrailingNewline {
+            content.removeLast()
+        }
 
         let replaced = content
             .components(separatedBy: "\n")
