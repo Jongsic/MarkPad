@@ -1,4 +1,4 @@
-name: MrMark
+name: MarkPad
 options:
   bundleIdPrefix: com.jongsic
   deploymentTarget:
@@ -19,7 +19,7 @@ settings:
     CODE_SIGN_IDENTITY: "-"
 
 targets:
-  MrMark:
+  MarkPad:
     type: application
     platform: macOS
     sources:
@@ -30,7 +30,7 @@ targets:
         product: Markdown
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.jongsic.MrMark
+        PRODUCT_BUNDLE_IDENTIFIER: com.jongsic.MarkPad
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_HARDENED_RUNTIME: YES
     info:
@@ -38,10 +38,10 @@ targets:
       properties:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
-        CFBundleName: MrMark
-        CFBundleDisplayName: MrMark
+        CFBundleName: MarkPad
+        CFBundleDisplayName: MarkPad
         NSPrincipalClass: NSApplication
-        NSHumanReadableCopyright: "MIT License © 2026 Jongsic and MrMark contributors"
+        NSHumanReadableCopyright: "MIT License © 2026 Jongsic and MarkPad contributors"
         LSApplicationCategoryType: public.app-category.productivity
         NSSupportsAutomaticTermination: true
         NSSupportsSuddenTermination: false
@@ -51,7 +51,7 @@ targets:
             LSHandlerRank: Default
             LSItemContentTypes:
               - net.daringfireball.markdown
-            NSDocumentClass: MrMark.MarkdownDocument
+            NSDocumentClass: MarkPad.MarkdownDocument
         UTImportedTypeDeclarations:
           - UTTypeIdentifier: net.daringfireball.markdown
             UTTypeDescription: Markdown Document
@@ -64,26 +64,26 @@ targets:
                 - mdown
                 - mkd
 
-  MrMarkTests:
+  MarkPadTests:
     type: bundle.unit-test
     platform: macOS
     sources:
       - Tests
     dependencies:
-      - target: MrMark
+      - target: MarkPad
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
 
 schemes:
-  MrMark:
+  MarkPad:
     build:
       targets:
-        MrMark: all
-        MrMarkTests: [test]
+        MarkPad: all
+        MarkPadTests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
-        - MrMarkTests
+        - MarkPadTests

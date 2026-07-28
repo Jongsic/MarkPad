@@ -2,7 +2,7 @@
 
 ## Security model
 
-MrMark is a **local-only** desktop application:
+MarkPad is a **local-only** desktop application:
 
 - It makes **no network requests**. There is no telemetry, no update pinging,
   no account system, and no cloud sync.
@@ -12,7 +12,7 @@ MrMark is a **local-only** desktop application:
 
 ## Reporting a vulnerability
 
-If you discover a security issue in MrMark itself (e.g. a crash or memory
+If you discover a security issue in MarkPad itself (e.g. a crash or memory
 corruption triggered by a crafted `.md` file), please report it privately via
 GitHub's **"Report a vulnerability"** (Security advisories) on the repository,
 rather than opening a public issue.
@@ -21,5 +21,5 @@ Only the latest release and the default branch are supported.
 
 ## Disclaimer
 
-MrMark is provided **"AS IS"**, without warranty of any kind, under the
+MarkPad is provided **"AS IS"**, without warranty of any kind, under the
 [MIT License](LICENSE).

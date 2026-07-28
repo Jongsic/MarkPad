@@ -45,7 +45,7 @@ final class CodeBlockLayoutDelegate: NSObject, NSTextLayoutManagerDelegate {
     ) -> NSTextLayoutFragment {
         if let paragraph = textElement as? NSTextParagraph,
            paragraph.attributedString.length > 0,
-           paragraph.attributedString.attribute(.mrmarkCodeBlock, at: 0, effectiveRange: nil) != nil
+           paragraph.attributedString.attribute(.markpadCodeBlock, at: 0, effectiveRange: nil) != nil
         {
             return CodeBlockLayoutFragment(textElement: textElement, range: textElement.elementRange)
         }
@@ -82,7 +82,7 @@ private final class CodeBlockLayoutFragment: NSTextLayoutFragment {
     }
 
     private var codeBlockEdge: CodeBlockEdge {
-        guard let raw = firstAttributes?[.mrmarkCodeBlockEdge] as? Int, let edge = CodeBlockEdge(rawValue: raw) else {
+        guard let raw = firstAttributes?[.markpadCodeBlockEdge] as? Int, let edge = CodeBlockEdge(rawValue: raw) else {
             return .none
         }
         return edge
@@ -185,13 +185,13 @@ private final class CodeBlockLayoutFragment: NSTextLayoutFragment {
         guard let attributes = firstAttributes else { return }
         var rightEdge = box.maxX - CodeBlockMetrics.badgeInset
 
-        if attributes[.mrmarkCodeCopy] != nil {
+        if attributes[.markpadCodeCopy] != nil {
             let rect = CodeBlockMetrics.copyButtonRect(box: box)
             drawCopyGlyph(in: rect, context: context)
             rightEdge = rect.minX - 8
         }
 
-        if let language = attributes[.mrmarkCodeLanguage] as? String, !language.isEmpty {
+        if let language = attributes[.markpadCodeLanguage] as? String, !language.isEmpty {
             let labelAttributes: [NSAttributedString.Key: Any] = [
                 .font: NSFont.monospacedSystemFont(ofSize: 10, weight: .regular),
                 .foregroundColor: NSColor.secondaryLabelColor,

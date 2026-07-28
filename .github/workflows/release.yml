@@ -28,24 +28,24 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          files: build/MrMark-*.dmg
+          files: build/MarkPad-*.dmg
           generate_release_notes: true
           body: |
-            Licensed under the [MIT License](https://github.com/Jongsic/MrMark/blob/main/LICENSE)
+            Licensed under the [MIT License](https://github.com/Jongsic/MarkPad/blob/main/LICENSE)
             — provided *as is*, without warranty of any kind.
 
             > ⚠️ **First launch** — builds are not notarized yet, so each OS
             > shows a warning **once**. Steps for your OS:
 
             **macOS 15 (Sequoia) and later**
-            1. Open MrMark — macOS says it *can't verify* the app.
+            1. Open MarkPad — macOS says it *can't verify* the app.
             2. Click **Done** (do *not* choose Move to Trash).
             3. Open **System Settings ▸ Privacy & Security**.
-            4. Scroll to **Security** — find *"MrMark" was blocked to protect your Mac*.
+            4. Scroll to **Security** — find *"MarkPad" was blocked to protect your Mac*.
             5. Click **Open Anyway**, then confirm with **Open**.
 
             **macOS 14 and earlier**
-            1. In Finder, right-click MrMark.app ▸ **Open**.
+            1. In Finder, right-click MarkPad.app ▸ **Open**.
             2. Click **Open** in the dialog.
 
             **Windows**
@@ -91,13 +91,13 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force build | Out-Null
           Copy-Item LICENSE build\LICENSE.txt
-          Compress-Archive -Path windows\bin\MrMark.exe, build\LICENSE.txt `
-            -DestinationPath "build\MrMark-$env:GITHUB_REF_NAME-windows-x64-portable.zip"
+          Compress-Archive -Path windows\bin\MarkPad.exe, build\LICENSE.txt `
+            -DestinationPath "build\MarkPad-$env:GITHUB_REF_NAME-windows-x64-portable.zip"
 
       # Attaches to the same release the macos job creates.
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           files: |
-            windows/bin/MrMark-Setup-*.exe
-            build/MrMark-*-windows-x64-portable.zip
+            windows/bin/MarkPad-Setup-*.exe
+            build/MarkPad-*-windows-x64-portable.zip

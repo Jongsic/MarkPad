@@ -1,5 +1,5 @@
 @echo off
-rem Builds MrMark for Windows: windows\bin\MrMark.exe (+ tests.exe with "test")
+rem Builds MarkPad for Windows: windows\bin\MarkPad.exe (+ tests.exe with "test")
 rem Requires the MSVC Build Tools:
 rem   winget install Microsoft.VisualStudio.2022.BuildTools --override ^
 rem     "--quiet --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
@@ -28,11 +28,11 @@ rc /nologo /fo "%OUT%\app.res" "%ROOT%res\app.rc" || exit /b 1
 cl %CFLAGS% ^
   "%ROOT%src\main.cpp" "%ROOT%src\parser.cpp" "%ROOT%src\document.cpp" ^
   "%ROOT%src\formatting.cpp" "%ROOT%src\styler.cpp" "%OUT%\app.res" ^
-  /Fe"%OUT%\MrMark.exe" /Fo"%OUT%\\" ^
+  /Fe"%OUT%\MarkPad.exe" /Fo"%OUT%\\" ^
   /link /SUBSYSTEM:WINDOWS user32.lib gdi32.lib shell32.lib ole32.lib oleaut32.lib ^
   comdlg32.lib comctl32.lib dwmapi.lib shlwapi.lib uxtheme.lib advapi32.lib ^
   windowscodecs.lib || exit /b 1
-echo Built %OUT%\MrMark.exe
+echo Built %OUT%\MarkPad.exe
 
 if "%1"=="test" (
   cl %CFLAGS% ^

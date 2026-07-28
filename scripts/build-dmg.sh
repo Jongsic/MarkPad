@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds MrMark.app (Release) and packages it into a DMG under build/.
+# Builds MarkPad.app (Release) and packages it into a DMG under build/.
 # The release workflow calls this same script, so a local run produces
 # exactly what a GitHub release ships.
 #
@@ -23,7 +23,7 @@ command -v xcodegen >/dev/null 2>&1 || {
   cd macos
   xcodegen generate
   xcodebuild \
-    -scheme MrMark \
+    -scheme MarkPad \
     -configuration Release \
     CODE_SIGN_IDENTITY=- \
     build
@@ -31,12 +31,12 @@ command -v xcodegen >/dev/null 2>&1 || {
 
 PRODUCTS_DIR=$(
   cd macos
-  xcodebuild -scheme MrMark -configuration Release -showBuildSettings 2>/dev/null |
+  xcodebuild -scheme MarkPad -configuration Release -showBuildSettings 2>/dev/null |
     awk -F' = ' '/ BUILT_PRODUCTS_DIR/{print $2; exit}'
 )
-APP="${PRODUCTS_DIR}/MrMark.app"
+APP="${PRODUCTS_DIR}/MarkPad.app"
 STAGING="build/dmg-staging"
-DMG="build/MrMark-${VERSION}.dmg"
+DMG="build/MarkPad-${VERSION}.dmg"
 
 rm -rf "$STAGING"
 mkdir -p "$STAGING"
@@ -44,7 +44,7 @@ cp -R "$APP" "$STAGING/"
 cp LICENSE "$STAGING/LICENSE.txt"
 ln -s /Applications "$STAGING/Applications"
 rm -f "$DMG"
-hdiutil create -volname "MrMark" -srcfolder "$STAGING" -ov -format UDZO "$DMG"
+hdiutil create -volname "MarkPad" -srcfolder "$STAGING" -ov -format UDZO "$DMG"
 rm -rf "$STAGING"
 
 echo

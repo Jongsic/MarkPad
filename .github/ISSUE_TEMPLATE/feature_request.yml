@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Please read first:** MrMark is deliberately minimal. Tabs, sidebars,
+        **Please read first:** MarkPad is deliberately minimal. Tabs, sidebars,
         plugins, cloud sync, accounts, export suites, and telemetry are
         explicitly out of scope (see the Non-goals section of the README) and
         requests for them will be closed. Everything else is fair game —

@@ -1,4 +1,4 @@
-﻿// Unit tests for MrMark's pure logic: parser, formatting actions, the
+﻿// Unit tests for MarkPad's pure logic: parser, formatting actions, the
 // document codec, and the editor's line styler. Console app; exits non-zero
 // on the first failure. Run via `build.cmd test`.
 
@@ -99,11 +99,11 @@ static void TestParser()
 
     // Links / autolinks / images / HTML
     {
-        auto blocksKeep = md::Parse(L"[MrMark](https://example.com/경로?쿼리=값)");
+        auto blocksKeep = md::Parse(L"[MarkPad](https://example.com/경로?쿼리=값)");
         const auto& inlines = blocksKeep[0].inlines;
         CHECK(inlines[0].type == md::InlineType::Link);
         CHECK(inlines[0].dest == L"https://example.com/경로?쿼리=값");
-        CHECK(md::PlainText(inlines[0].children) == L"MrMark");
+        CHECK(md::PlainText(inlines[0].children) == L"MarkPad");
     }
     {
         auto blocksKeep = md::Parse(L"<https://www.example.com>");
@@ -112,11 +112,11 @@ static void TestParser()
         CHECK(inlines[0].dest == L"https://www.example.com");
     }
     {
-        auto blocksKeep = md::Parse(L"![MrMark icon](design/M.png)");
+        auto blocksKeep = md::Parse(L"![MarkPad icon](design/M.png)");
         const auto& inlines = blocksKeep[0].inlines;
         CHECK(inlines[0].type == md::InlineType::Image);
         CHECK(inlines[0].dest == L"design/M.png");
-        CHECK(inlines[0].text == L"MrMark icon");
+        CHECK(inlines[0].text == L"MarkPad icon");
     }
     {
         bool kbdOpen = false, kbdClose = false;

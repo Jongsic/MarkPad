@@ -21,9 +21,9 @@ enum MainMenu {
     }
 
     private static func appMenu() -> NSMenu {
-        let menu = NSMenu(title: "MrMark")
+        let menu = NSMenu(title: "MarkPad")
         menu.addItem(
-            withTitle: "About MrMark",
+            withTitle: "About MarkPad",
             action: #selector(AppDelegate.showAbout(_:)),
             keyEquivalent: ""
         )
@@ -33,7 +33,7 @@ enum MainMenu {
             keyEquivalent: ""
         )
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Hide MrMark", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
+        menu.addItem(withTitle: "Hide MarkPad", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
         let hideOthers = menu.addItem(
             withTitle: "Hide Others",
             action: #selector(NSApplication.hideOtherApplications(_:)),
@@ -46,7 +46,7 @@ enum MainMenu {
             keyEquivalent: ""
         )
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Quit MrMark", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: "Quit MarkPad", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         return menu
     }
 
@@ -178,7 +178,7 @@ enum MainMenu {
     private static func helpMenu() -> NSMenu {
         let menu = NSMenu(title: "Help")
         menu.addItem(
-            withTitle: "MrMark on GitHub",
+            withTitle: "MarkPad on GitHub",
             action: #selector(AppDelegate.openGitHub(_:)),
             keyEquivalent: ""
         )

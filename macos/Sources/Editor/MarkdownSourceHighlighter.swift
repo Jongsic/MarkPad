@@ -3,7 +3,7 @@ import Markdown
 
 extension NSAttributedString.Key {
     /// Present on syntax delimiters that are currently hidden (Typora-style).
-    static let mrmarkConcealed = NSAttributedString.Key("mrmark.concealed")
+    static let markpadConcealed = NSAttributedString.Key("markpad.concealed")
 }
 
 /// Live styling for the editor's hybrid (Typora-style) mode.
@@ -47,7 +47,7 @@ final class MarkdownSourceHighlighter {
     /// Delimiters keep their characters (source model is untouched); they are
     /// hidden by collapsing the glyphs to (near) zero and clearing the color.
     private static let concealedAttributes: [NSAttributedString.Key: Any] = [
-        .mrmarkConcealed: true,
+        .markpadConcealed: true,
         .font: NSFont.systemFont(ofSize: 0.1),
         .foregroundColor: NSColor.clear,
     ]

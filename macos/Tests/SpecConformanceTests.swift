@@ -1,4 +1,4 @@
-@testable import MrMark
+@testable import MarkPad
 import XCTest
 
 /// Feeds every CommonMark spec input — plus pathological deeply-nested ones —

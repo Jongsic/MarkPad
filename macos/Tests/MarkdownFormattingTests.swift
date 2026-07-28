@@ -1,4 +1,4 @@
-@testable import MrMark
+@testable import MarkPad
 import XCTest
 
 final class MarkdownFormattingTests: XCTestCase {

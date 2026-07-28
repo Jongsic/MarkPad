@@ -1,4 +1,4 @@
-@testable import MrMark
+@testable import MarkPad
 import XCTest
 
 final class MarkdownSourceHighlighterTests: XCTestCase {
@@ -25,7 +25,7 @@ final class MarkdownSourceHighlighterTests: XCTestCase {
 
     private func isConcealed(_ needle: String, in storage: NSTextStorage) -> Bool {
         let location = range(of: needle, in: storage).location
-        return storage.attribute(.mrmarkConcealed, at: location, effectiveRange: nil) != nil
+        return storage.attribute(.markpadConcealed, at: location, effectiveRange: nil) != nil
     }
 
     private func paragraphRange(of needle: String, in storage: NSTextStorage) -> NSRange {
@@ -109,13 +109,13 @@ final class MarkdownSourceHighlighterTests: XCTestCase {
     }
 
     func testInlineCodeBackticksConceal() {
-        let source = "run `mrmark` now\n\ncursor"
+        let source = "run `markpad` now\n\ncursor"
         let storage = NSTextStorage(string: source)
         highlighter.highlightAll(storage, revealing: paragraphRange(of: "cursor", in: storage))
 
         XCTAssertTrue(isConcealed("`", in: storage))
-        XCTAssertFalse(isConcealed("mrmark", in: storage))
-        XCTAssertTrue(font(in: storage, at: "mrmark")?.fontDescriptor.symbolicTraits.contains(.monoSpace) ?? false)
+        XCTAssertFalse(isConcealed("markpad", in: storage))
+        XCTAssertTrue(font(in: storage, at: "markpad")?.fontDescriptor.symbolicTraits.contains(.monoSpace) ?? false)
     }
 
     func testMovingTheCursorReconcealsTheParagraphItLeft() {

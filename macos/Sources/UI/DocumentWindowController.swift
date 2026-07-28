@@ -11,22 +11,22 @@ final class DocumentWindowController: NSWindowController, NSToolbarDelegate {
 
     private enum ItemIdentifier {
         // Viewer
-        static let zoom = NSToolbarItem.Identifier("mrmark.zoom")
+        static let zoom = NSToolbarItem.Identifier("markpad.zoom")
         // Editor
-        static let save = NSToolbarItem.Identifier("mrmark.save")
-        static let undo = NSToolbarItem.Identifier("mrmark.undo")
-        static let redo = NSToolbarItem.Identifier("mrmark.redo")
-        static let bold = NSToolbarItem.Identifier("mrmark.bold")
-        static let italic = NSToolbarItem.Identifier("mrmark.italic")
-        static let heading1 = NSToolbarItem.Identifier("mrmark.h1")
-        static let heading2 = NSToolbarItem.Identifier("mrmark.h2")
-        static let heading3 = NSToolbarItem.Identifier("mrmark.h3")
-        static let bullet = NSToolbarItem.Identifier("mrmark.bullet")
-        static let numbered = NSToolbarItem.Identifier("mrmark.numbered")
-        static let checklist = NSToolbarItem.Identifier("mrmark.checklist")
-        static let link = NSToolbarItem.Identifier("mrmark.link")
-        static let image = NSToolbarItem.Identifier("mrmark.image")
-        static let codeBlock = NSToolbarItem.Identifier("mrmark.codeBlock")
+        static let save = NSToolbarItem.Identifier("markpad.save")
+        static let undo = NSToolbarItem.Identifier("markpad.undo")
+        static let redo = NSToolbarItem.Identifier("markpad.redo")
+        static let bold = NSToolbarItem.Identifier("markpad.bold")
+        static let italic = NSToolbarItem.Identifier("markpad.italic")
+        static let heading1 = NSToolbarItem.Identifier("markpad.h1")
+        static let heading2 = NSToolbarItem.Identifier("markpad.h2")
+        static let heading3 = NSToolbarItem.Identifier("markpad.h3")
+        static let bullet = NSToolbarItem.Identifier("markpad.bullet")
+        static let numbered = NSToolbarItem.Identifier("markpad.numbered")
+        static let checklist = NSToolbarItem.Identifier("markpad.checklist")
+        static let link = NSToolbarItem.Identifier("markpad.link")
+        static let image = NSToolbarItem.Identifier("markpad.image")
+        static let codeBlock = NSToolbarItem.Identifier("markpad.codeBlock")
     }
 
     /// NSDocument sets NSWindowController.document in addWindowController(_:).
@@ -47,7 +47,7 @@ final class DocumentWindowController: NSWindowController, NSToolbarDelegate {
         window.tabbingMode = .disallowed
         window.toolbarStyle = .unifiedCompact
         window.center()
-        window.setFrameAutosaveName("MrMarkDocumentWindow")
+        window.setFrameAutosaveName("MarkPadDocumentWindow")
         self.init(window: window)
         wireZoom(of: viewer)
         window.toolbar = makeToolbar(.viewer)
@@ -90,7 +90,7 @@ final class DocumentWindowController: NSWindowController, NSToolbarDelegate {
             action: #selector(AppDelegate.showAbout(_:))
         )
         about.bezelStyle = .texturedRounded
-        about.toolTip = "About MrMark"
+        about.toolTip = "About MarkPad"
 
         let stack = NSStackView(views: [toggle, about])
         stack.orientation = .horizontal
@@ -167,7 +167,7 @@ final class DocumentWindowController: NSWindowController, NSToolbarDelegate {
     // MARK: - Toolbars
 
     private func makeToolbar(_ mode: Mode) -> NSToolbar {
-        let toolbar = NSToolbar(identifier: "mrmark.toolbar.\(mode.rawValue)")
+        let toolbar = NSToolbar(identifier: "markpad.toolbar.\(mode.rawValue)")
         toolbar.delegate = self
         toolbar.displayMode = .iconOnly
         toolbar.allowsUserCustomization = false
@@ -175,7 +175,7 @@ final class DocumentWindowController: NSWindowController, NSToolbarDelegate {
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        if toolbar.identifier == "mrmark.toolbar.editor" {
+        if toolbar.identifier == "markpad.toolbar.editor" {
             return [
                 // Document group: zoom + save, set apart from the editing tools.
                 ItemIdentifier.zoom, ItemIdentifier.save,
@@ -205,7 +205,7 @@ final class DocumentWindowController: NSWindowController, NSToolbarDelegate {
             // Collapses with the tools in edit mode, but not in the viewer.
             zoomControlItem(
                 itemIdentifier,
-                priority: toolbar.identifier == "mrmark.toolbar.editor" ? .low : .standard
+                priority: toolbar.identifier == "markpad.toolbar.editor" ? .low : .standard
             )
         // Editor
         case ItemIdentifier.save:

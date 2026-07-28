@@ -9,7 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // `MrMark file.md` from a shell (Finder/`open` go through Apple Events
+        // `MarkPad file.md` from a shell (Finder/`open` go through Apple Events
         // instead). Also what `--benchmark` timing runs use.
         for url in Self.fileArguments {
             NSDocumentController.shared.openDocument(withContentsOf: url, display: true) { _, _, _ in }
@@ -38,7 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc func openGitHub(_ sender: Any?) {
-        NSWorkspace.shared.open(URL(string: "https://github.com/Jongsic/MrMark")!)
+        NSWorkspace.shared.open(URL(string: "https://github.com/Jongsic/MarkPad")!)
     }
 
     @objc func setAsDefaultMarkdownApp(_ sender: Any?) {
@@ -48,12 +48,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func showAbout(_ sender: Any?) {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev"
         let alert = NSAlert()
-        alert.messageText = "MrMark \(version)"
+        alert.messageText = "MarkPad \(version)"
         alert.informativeText = """
         An ultra-fast, minimal Markdown viewer & editor.
         One file, one window — nothing else.
 
-        MIT License © 2026 Jongsic and MrMark contributors
+        MIT License © 2026 Jongsic and MarkPad contributors
         """
         alert.addButton(withTitle: "OK")
         alert.addButton(withTitle: "GitHub")

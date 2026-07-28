@@ -1,4 +1,4 @@
-@testable import MrMark
+@testable import MarkPad
 import XCTest
 
 /// Verifies that external file changes follow stock NSDocument behavior
@@ -10,7 +10,7 @@ final class ExternalChangeTests: XCTestCase {
 
     override func setUpWithError() throws {
         directory = FileManager.default.temporaryDirectory
-            .appendingPathComponent("MrMarkTests-\(UUID().uuidString)")
+            .appendingPathComponent("MarkPadTests-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     }
 

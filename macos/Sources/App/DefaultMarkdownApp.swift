@@ -3,7 +3,7 @@ import UniformTypeIdentifiers
 
 /// Becoming the default app for Markdown files — never silently, ask exactly
 /// once, and only after the user has actually opened a .md file. A manual
-/// path stays available in the MrMark menu for anyone who changes their mind.
+/// path stays available in the MarkPad menu for anyone who changes their mind.
 enum DefaultMarkdownApp {
     static let contentType = UTType(importedAs: "net.daringfireball.markdown")
 
@@ -41,11 +41,11 @@ enum DefaultMarkdownApp {
             UserDefaults.standard.set(true, forKey: askedDefaultsKey)
 
             let alert = NSAlert()
-            alert.messageText = "Use MrMark for Markdown files?"
+            alert.messageText = "Use MarkPad for Markdown files?"
             alert.informativeText = """
-            Make MrMark the default application for opening .md files. \
+            Make MarkPad the default application for opening .md files. \
             You can change this anytime in Finder's Get Info panel, \
-            or later via the MrMark menu.
+            or later via the MarkPad menu.
             """
             alert.addButton(withTitle: "Set as Default")
             alert.addButton(withTitle: "No Thanks")
@@ -55,12 +55,12 @@ enum DefaultMarkdownApp {
         }
     }
 
-    /// `interactive` adds explicit feedback (the MrMark ▸ Set as Default…
+    /// `interactive` adds explicit feedback (the MarkPad ▸ Set as Default…
     /// menu path); errors are always surfaced.
     static func makeDefault(interactive: Bool) {
         if interactive, isDefault {
             let alert = NSAlert()
-            alert.messageText = "MrMark is already the default app for Markdown files."
+            alert.messageText = "MarkPad is already the default app for Markdown files."
             alert.runModal()
             return
         }
@@ -72,7 +72,7 @@ enum DefaultMarkdownApp {
                     alert.messageText = "Couldn't set the default app"
                     alert.informativeText = error.localizedDescription
                 } else if interactive {
-                    alert.messageText = "MrMark is now the default app for Markdown files."
+                    alert.messageText = "MarkPad is now the default app for Markdown files."
                 } else {
                     return
                 }

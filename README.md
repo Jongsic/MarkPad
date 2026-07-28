@@ -1,7 +1,7 @@
-# MrMark
+# MarkPad
 
-[![CI](https://github.com/Jongsic/MrMark/actions/workflows/ci.yml/badge.svg)](https://github.com/Jongsic/MrMark/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/Jongsic/MrMark)](https://github.com/Jongsic/MrMark/releases)
+[![CI](https://github.com/Jongsic/MarkPad/actions/workflows/ci.yml/badge.svg)](https://github.com/Jongsic/MarkPad/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Jongsic/MarkPad)](https://github.com/Jongsic/MarkPad/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-black)
 ![Windows 10+](https://img.shields.io/badge/Windows-10%2B-blue)
@@ -11,7 +11,7 @@ Native on each platform — Swift + AppKit on macOS, C++ + Win32 on Windows.
 Not Electron, not a webview. One file = one window.
 No workspace, no tabs, no plugins, no cloud, no telemetry.
 
-![MrMark](preview.gif)
+![MarkPad](preview.gif)
 
 Double-clicking a `.md` file shows a rendered, read-only view instantly.
 Hit ✏️ to edit; hit 👁 to go back to reading. That's the whole app.
@@ -41,7 +41,7 @@ Both apps implement the same spec.
 - Manual save (⌘S / Ctrl+S), dirty indicator, a Save / Don't Save prompt
   when closing unsaved changes; Open Recent; new documents open straight
   into the editor
-- Edited outside MrMark (another editor, git, a script)? A clean document
+- Edited outside MarkPad (another editor, git, a script)? A clean document
   reloads automatically; unsaved edits are never touched and conflicts
   surface on save
 - CRLF line endings and UTF-8 BOM survive open + save byte-exactly
@@ -57,8 +57,8 @@ Requirements: macOS 14+, Xcode 16+, [XcodeGen](https://github.com/yonaskolb/Xcod
 brew install xcodegen
 cd macos
 xcodegen generate
-xcodebuild -scheme MrMark -configuration Release build         # or: open MrMark.xcodeproj
-xcodebuild -scheme MrMark -destination 'platform=macOS' test
+xcodebuild -scheme MarkPad -configuration Release build         # or: open MarkPad.xcodeproj
+xcodebuild -scheme MarkPad -destination 'platform=macOS' test
 ```
 
 The `.xcodeproj` is generated from `macos/project.yml` and is not checked in.
@@ -76,9 +76,9 @@ Requirements: Windows 10+ and the MSVC Build Tools
 
 ```powershell
 cd windows
-build.cmd            # -> bin\MrMark.exe
+build.cmd            # -> bin\MarkPad.exe
 build.cmd test       # build + run the unit tests
-bin\MrMark.exe file.md
+bin\MarkPad.exe file.md
 ```
 
 Dependencies: AppKit + [swift-markdown](https://github.com/swiftlang/swift-markdown)
@@ -99,8 +99,8 @@ design/           icon source and brand assets
 
 ## Performance
 
-`MrMark --benchmark file.md` prints a stage breakdown on both platforms
-(Windows also logs to `%TEMP%\MrMark-benchmark.log`).
+`MarkPad --benchmark file.md` prints a stage breakdown on both platforms
+(Windows also logs to `%TEMP%\MarkPad-benchmark.log`).
 
 | Release build | macOS (Apple Silicon) | Windows (x64) |
 |---|---|---|
@@ -113,21 +113,21 @@ rest is process start and the first window.
 
 ## Install
 
-Both from [Releases](https://github.com/Jongsic/MrMark/releases). Builds are
+Both from [Releases](https://github.com/Jongsic/MarkPad/releases). Builds are
 not code-signed or notarized yet, so each OS shows a scary warning **once**
-on first launch. Follow the steps for your OS below — after that, MrMark
+on first launch. Follow the steps for your OS below — after that, MarkPad
 opens like any other app.
 
 ### First launch on macOS 15 (Sequoia) and later
 
-Grab the `.dmg` and drag MrMark into Applications, then:
+Grab the `.dmg` and drag MarkPad into Applications, then:
 
-1. Open MrMark. macOS says it **can't verify** the app and only offers
+1. Open MarkPad. macOS says it **can't verify** the app and only offers
    *Move to Trash* or *Done*.
 2. Click **Done** — do *not* move it to the Trash.
 3. Open **System Settings ▸ Privacy & Security**.
 4. Scroll down to the **Security** section. You'll see
-   *"MrMark" was blocked to protect your Mac*.
+   *"MarkPad" was blocked to protect your Mac*.
 5. Click **Open Anyway**.
 6. Confirm with **Open** (enter your password or Touch ID if asked).
 
@@ -135,28 +135,28 @@ That's it — macOS remembers the choice permanently.
 
 ### First launch on macOS 14 and earlier
 
-1. In Finder, **right-click** (or Control-click) MrMark.app.
+1. In Finder, **right-click** (or Control-click) MarkPad.app.
 2. Choose **Open**.
 3. Click **Open** in the confirmation dialog. Needed only once.
 
 ### First launch on Windows
 
-1. Run `MrMark-Setup-<version>.exe` (or `MrMark.exe` from the portable zip).
+1. Run `MarkPad-Setup-<version>.exe` (or `MarkPad.exe` from the portable zip).
 2. If SmartScreen shows *"Windows protected your PC"*, click **More info**.
 3. Click **Run anyway**. Needed only once per download.
 
-The installer installs per-user to `%LOCALAPPDATA%\Programs\MrMark` (no
+The installer installs per-user to `%LOCALAPPDATA%\Programs\MarkPad` (no
 admin), adds a Start Menu entry and the `.md` "Open with" registration, and
 uninstalls from Settings ▸ Apps. To make it the default: right-click a
-`.md` ▸ Open with ▸ MrMark ▸ Always.
+`.md` ▸ Open with ▸ MarkPad ▸ Always.
 
-Prefer no installer? `MrMark-<version>-windows-x64-portable.zip` is just
-`MrMark.exe` — put it anywhere and run it; Help ▸ Set as Default wires up
+Prefer no installer? `MarkPad-<version>-windows-x64-portable.zip` is just
+`MarkPad.exe` — put it anywhere and run it; Help ▸ Set as Default wires up
 the file association from wherever it lives.
 
 ## Non-goals
 
-MrMark is deliberately small. There will be no plugins, tabs, sidebars, file
+MarkPad is deliberately small. There will be no plugins, tabs, sidebars, file
 trees, split preview, cloud sync, accounts, AI, export suites, or telemetry.
 If you need a knowledge system, this isn't it — it's the fast little app you
 point `.md` files at.

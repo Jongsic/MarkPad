@@ -1,7 +1,6 @@
 ﻿#pragma once
-// GFM-subset parser for the fast native viewer — a direct C++ port of the
-// C# MarkdownParser/InlineParser in windows/MrMark (which is itself the spec
-// mirror of the macOS renderer). Input uses "\n" line endings.
+// GFM-subset parser for the fast native viewer — the spec mirror of the
+// macOS renderer. Input uses "\n" line endings.
 
 #include <string>
 #include <utility>

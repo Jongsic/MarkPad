@@ -27,7 +27,7 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild \
-            -scheme MrMark \
+            -scheme MarkPad \
             -destination 'platform=macOS' \
             CODE_SIGN_IDENTITY=- \
             test

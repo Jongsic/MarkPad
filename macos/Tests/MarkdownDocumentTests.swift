@@ -1,4 +1,4 @@
-@testable import MrMark
+@testable import MarkPad
 import XCTest
 
 final class MarkdownDocumentTests: XCTestCase {
@@ -93,7 +93,7 @@ final class MarkdownDocumentTests: XCTestCase {
         let rendered = MarkdownRenderer(baseURL: nil).render(document.text)
         let checkboxIndex = (rendered.string as NSString).range(of: "☐").location
         let line = try XCTUnwrap(
-            rendered.attribute(.mrmarkCheckboxLine, at: checkboxIndex, effectiveRange: nil) as? Int
+            rendered.attribute(.markpadCheckboxLine, at: checkboxIndex, effectiveRange: nil) as? Int
         )
 
         document.toggleCheckbox(atSourceLine: line)

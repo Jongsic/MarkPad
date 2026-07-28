@@ -8,7 +8,7 @@
 
 ## How was it tested?
 
-- [ ] `xcodebuild -scheme MrMark -destination 'platform=macOS' test` passes
+- [ ] `xcodebuild -scheme MarkPad -destination 'platform=macOS' test` passes
 - [ ] `swiftformat --lint .` passes
 - [ ] Manual test steps (for UI changes):
 

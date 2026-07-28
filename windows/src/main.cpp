@@ -1,4 +1,4 @@
-﻿// MrMark for Windows — an ultra-fast, minimal Markdown viewer & editor.
+﻿// MarkPad for Windows — an ultra-fast, minimal Markdown viewer & editor.
 // One file = one window. Native Win32; the document view is the OS text
 // control (RichEdit), so selection, copy, IME, accessibility, and zoom all
 // behave exactly like Windows. Two modes share that one control:
@@ -88,7 +88,7 @@ static void Emit(const wchar_t* line)
     fflush(stdout);
     wchar_t path[MAX_PATH];
     if (GetTempPathW(MAX_PATH, path)) {
-        wcscat_s(path, L"MrMark-benchmark.log");
+        wcscat_s(path, L"MarkPad-benchmark.log");
         FILE* f = nullptr;
         if (_wfopen_s(&f, path, L"a, ccs=UTF-8") == 0 && f) {
             fputws(line, f);
@@ -893,7 +893,7 @@ static void UpdateTitle()
 {
     std::wstring title = g_app.doc.DisplayName();
     if (g_app.doc.dirty) title += L"*";
-    title += L" - MrMark";
+    title += L" - MarkPad";
     SetWindowTextW(g_app.hwnd, title.c_str());
 }
 
@@ -1229,14 +1229,14 @@ static bool SaveInteractive()
     if (g_app.doc.path.empty()) return SaveAsInteractive();
     if (g_app.doc.DiskChanged()) {
         int chosen = 0;
-        TaskDialog(g_app.hwnd, nullptr, L"MrMark",
+        TaskDialog(g_app.hwnd, nullptr, L"MarkPad",
                    L"This file has been changed by another application.",
                    L"Saving will overwrite those changes.",
                    TDCBF_YES_BUTTON | TDCBF_CANCEL_BUTTON, TD_WARNING_ICON, &chosen);
         if (chosen != IDYES) return false;
     }
     if (!g_app.doc.Save()) {
-        TaskDialog(g_app.hwnd, nullptr, L"MrMark", L"Couldn't save the document.", nullptr,
+        TaskDialog(g_app.hwnd, nullptr, L"MarkPad", L"Couldn't save the document.", nullptr,
                    TDCBF_OK_BUTTON, TD_ERROR_ICON, nullptr);
         return false;
     }
@@ -1259,7 +1259,7 @@ static bool SaveAsInteractive()
     ofn.Flags = OFN_OVERWRITEPROMPT;
     if (!GetSaveFileNameW(&ofn)) return false;
     if (!g_app.doc.SaveAsPath(buffer)) {
-        TaskDialog(g_app.hwnd, nullptr, L"MrMark", L"Couldn't save the document.", nullptr,
+        TaskDialog(g_app.hwnd, nullptr, L"MarkPad", L"Couldn't save the document.", nullptr,
                    TDCBF_OK_BUTTON, TD_ERROR_ICON, nullptr);
         return false;
     }
@@ -1275,7 +1275,7 @@ static int ConfirmClose()
 {
     TASKDIALOGCONFIG config{ sizeof(config) };
     config.hwndParent = g_app.hwnd;
-    config.pszWindowTitle = L"MrMark";
+    config.pszWindowTitle = L"MarkPad";
     config.pszMainInstruction = L"Do you want to save the changes you made?";
     config.pszContent = L"Your changes will be lost if you don't save them.";
     TASKDIALOG_BUTTON buttons[] = { { 101, L"Save" }, { 102, L"Don't Save" } };
@@ -1309,7 +1309,7 @@ struct ActivateQuery {
 static BOOL CALLBACK ActivateEnumProc(HWND hwnd, LPARAM lp)
 {
     wchar_t className[32];
-    if (!GetClassNameW(hwnd, className, 32) || wcscmp(className, L"MrMark") != 0) return TRUE;
+    if (!GetClassNameW(hwnd, className, 32) || wcscmp(className, L"MarkPad") != 0) return TRUE;
     if (hwnd == g_app.hwnd) return TRUE;
     auto* query = (ActivateQuery*)lp;
     COPYDATASTRUCT data{};
@@ -1383,7 +1383,7 @@ static std::vector<std::wstring> ReadRecents()
 {
     std::vector<std::wstring> out;
     HKEY key;
-    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\MrMark\\Recent", 0, KEY_READ, &key)
+    if (RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\MarkPad\\Recent", 0, KEY_READ, &key)
         != ERROR_SUCCESS) {
         return out;
     }
@@ -1413,7 +1413,7 @@ static void NoteRecent(const std::wstring& path)
     if (recents.size() > 10) recents.resize(10);
 
     HKEY key;
-    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\MrMark\\Recent", 0, nullptr, 0, KEY_WRITE,
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\MarkPad\\Recent", 0, nullptr, 0, KEY_WRITE,
                         nullptr, &key, nullptr) != ERROR_SUCCESS) {
         return;
     }
@@ -1437,7 +1437,7 @@ static void SavePlacement()
     WINDOWPLACEMENT wp{ sizeof(wp) };
     if (!GetWindowPlacement(g_app.hwnd, &wp)) return;
     HKEY key;
-    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\MrMark", 0, nullptr, 0, KEY_WRITE,
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\MarkPad", 0, nullptr, 0, KEY_WRITE,
                         nullptr, &key, nullptr) == ERROR_SUCCESS) {
         RegSetValueExW(key, L"Placement", 0, REG_BINARY, (BYTE*)&wp, sizeof(wp));
         RegCloseKey(key);
@@ -1447,14 +1447,14 @@ static void SavePlacement()
 static bool RestorePlacement(WINDOWPLACEMENT& wp)
 {
     DWORD size = sizeof(wp);
-    return RegGetValueW(HKEY_CURRENT_USER, L"Software\\MrMark", L"Placement", RRF_RT_REG_BINARY,
+    return RegGetValueW(HKEY_CURRENT_USER, L"Software\\MarkPad", L"Placement", RRF_RT_REG_BINARY,
                         nullptr, &wp, &size) == ERROR_SUCCESS
         && wp.length == sizeof(wp);
 }
 
 // Becoming the default app for Markdown files: never silently, ask exactly
 // once, and only after a real file was opened. Windows requires the user to
-// confirm in its own Settings UI; MrMark registers per-user and sends them
+// confirm in its own Settings UI; MarkPad registers per-user and sends them
 // there — the OS-sanctioned flow.
 
 static bool IsDefaultMarkdownApp()
@@ -1464,7 +1464,7 @@ static bool IsDefaultMarkdownApp()
     return RegGetValueW(HKEY_CURRENT_USER,
                         L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.md\\UserChoice",
                         L"ProgId", RRF_RT_REG_SZ, nullptr, value, &size) == ERROR_SUCCESS
-        && wcscmp(value, L"MrMark.md") == 0;
+        && wcscmp(value, L"MarkPad.md") == 0;
 }
 
 static void RegisterProgId()
@@ -1473,7 +1473,7 @@ static void RegisterProgId()
     GetModuleFileNameW(nullptr, exe, MAX_PATH);
 
     HKEY progId;
-    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Classes\\MrMark.md", 0, nullptr, 0,
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Classes\\MarkPad.md", 0, nullptr, 0,
                         KEY_WRITE, nullptr, &progId, nullptr) == ERROR_SUCCESS) {
         const wchar_t* name = L"Markdown Document";
         RegSetValueExW(progId, nullptr, 0, REG_SZ, (const BYTE*)name,
@@ -1501,7 +1501,7 @@ static void RegisterProgId()
         HKEY key;
         if (RegCreateKeyExW(HKEY_CURRENT_USER, keyPath.c_str(), 0, nullptr, 0, KEY_WRITE,
                             nullptr, &key, nullptr) == ERROR_SUCCESS) {
-            RegSetValueExW(key, L"MrMark.md", 0, REG_NONE, nullptr, 0);
+            RegSetValueExW(key, L"MarkPad.md", 0, REG_NONE, nullptr, 0);
             RegCloseKey(key);
         }
     }
@@ -1510,17 +1510,17 @@ static void RegisterProgId()
 static void MakeDefaultInteractive(bool interactive)
 {
     if (interactive && IsDefaultMarkdownApp()) {
-        TaskDialog(g_app.hwnd, nullptr, L"MrMark",
-                   L"MrMark is already the default app for Markdown files.", nullptr,
+        TaskDialog(g_app.hwnd, nullptr, L"MarkPad",
+                   L"MarkPad is already the default app for Markdown files.", nullptr,
                    TDCBF_OK_BUTTON, TD_INFORMATION_ICON, nullptr);
         return;
     }
     RegisterProgId();
     ShellExecuteW(nullptr, L"open", L"ms-settings:defaultapps", nullptr, nullptr, SW_SHOWNORMAL);
     TaskDialog(g_app.hwnd, nullptr, L"One more step",
-               L"MrMark is registered.",
-               L"In the Settings page that just opened, search for \".md\" (or \"MrMark\") "
-               L"and choose MrMark as the default.",
+               L"MarkPad is registered.",
+               L"In the Settings page that just opened, search for \".md\" (or \"MarkPad\") "
+               L"and choose MarkPad as the default.",
                TDCBF_OK_BUTTON, TD_INFORMATION_ICON, nullptr);
 }
 
@@ -1528,13 +1528,13 @@ static void OfferDefaultIfAppropriate()
 {
     if (g_app.doc.path.empty()) return; // no user intent yet
     DWORD asked = 0, size = sizeof(asked);
-    RegGetValueW(HKEY_CURRENT_USER, L"Software\\MrMark", L"AskedDefault", RRF_RT_REG_DWORD,
+    RegGetValueW(HKEY_CURRENT_USER, L"Software\\MarkPad", L"AskedDefault", RRF_RT_REG_DWORD,
                  nullptr, &asked, &size);
     if (asked || IsDefaultMarkdownApp()) return;
 
     // Whatever the answer, never ask again.
     HKEY key;
-    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\MrMark", 0, nullptr, 0, KEY_WRITE,
+    if (RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\MarkPad", 0, nullptr, 0, KEY_WRITE,
                         nullptr, &key, nullptr) == ERROR_SUCCESS) {
         DWORD one = 1;
         RegSetValueExW(key, L"AskedDefault", 0, REG_DWORD, (BYTE*)&one, sizeof(one));
@@ -1542,8 +1542,8 @@ static void OfferDefaultIfAppropriate()
     }
 
     int chosen = 0;
-    TaskDialog(g_app.hwnd, nullptr, L"Use MrMark for Markdown files?",
-               L"Make MrMark the default application for opening .md files?",
+    TaskDialog(g_app.hwnd, nullptr, L"Use MarkPad for Markdown files?",
+               L"Make MarkPad the default application for opening .md files?",
                L"Windows will show its standard picker so you can confirm. "
                L"You can change this anytime in Settings, or later via the Help menu.",
                TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_INFORMATION_ICON, &chosen);
@@ -1792,7 +1792,7 @@ static const wchar_t* ButtonTip(int id)
     case IDM_TOGGLEMODE:
         return g_app.mode == Mode::Editor ? L"Back to the reading view (Ctrl+E)"
                                           : L"Edit this document (Ctrl+E)";
-    case IDM_ABOUT: return L"About MrMark";
+    case IDM_ABOUT: return L"About MarkPad";
     default: return L"";
     }
 }
@@ -2011,7 +2011,7 @@ static HMENU BuildMenu()
     HMENU help = CreatePopupMenu();
     AppendMenuW(help, MF_STRING, IDM_SETDEFAULT, L"Set as &Default Markdown App...");
     AppendMenuW(help, MF_SEPARATOR, 0, nullptr);
-    AppendMenuW(help, MF_STRING, IDM_ABOUT, L"&About MrMark");
+    AppendMenuW(help, MF_STRING, IDM_ABOUT, L"&About MarkPad");
 
     HMENU bar = CreateMenu();
     AppendMenuW(bar, MF_POPUP, (UINT_PTR)file, L"&File");
@@ -2065,11 +2065,11 @@ static std::wstring AppVersion()
 
 static void ShowAbout()
 {
-    std::wstring title = L"MrMark " + AppVersion();
-    TaskDialog(g_app.hwnd, nullptr, L"About MrMark", title.c_str(),
+    std::wstring title = L"MarkPad " + AppVersion();
+    TaskDialog(g_app.hwnd, nullptr, L"About MarkPad", title.c_str(),
                L"An ultra-fast, minimal Markdown viewer & editor.\n"
                L"One file = one window. No tabs, no plugins, no cloud, no telemetry.\n\n"
-               L"MIT License - github.com/Jongsic/MrMark",
+               L"MIT License - github.com/Jongsic/MarkPad",
                TDCBF_OK_BUTTON, TD_INFORMATION_ICON, nullptr);
 }
 
@@ -2588,7 +2588,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCmd)
         if (!benchmark && ActivateExistingWindow(full)) return 0;
 
         if (!g_app.doc.Load(full)) {
-            TaskDialog(nullptr, nullptr, L"MrMark", L"Couldn't open the file.", nullptr,
+            TaskDialog(nullptr, nullptr, L"MarkPad", L"Couldn't open the file.", nullptr,
                        TDCBF_OK_BUTTON, TD_ERROR_ICON, nullptr);
             return 1;
         }
@@ -2622,7 +2622,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCmd)
     wc.lpfnWndProc = WndProc;
     wc.hInstance = instance;
     wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
-    wc.lpszClassName = L"MrMark";
+    wc.lpszClassName = L"MarkPad";
     wc.hIcon = LoadIconW(instance, MAKEINTRESOURCEW(1));
     RegisterClassW(&wc);
 
@@ -2637,7 +2637,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PWSTR, int showCmd)
     int x = work.left + ((work.right - work.left) - width) / 2;
     int y = work.top + ((work.bottom - work.top) - height) / 2;
 
-    g_app.hwnd = CreateWindowExW(0, wc.lpszClassName, L"MrMark", WS_OVERLAPPEDWINDOW, x, y,
+    g_app.hwnd = CreateWindowExW(0, wc.lpszClassName, L"MarkPad", WS_OVERLAPPEDWINDOW, x, y,
                                  width, height, nullptr, BuildMenu(), instance, nullptr);
     if (!g_app.hwnd) return 1;
     g_app.dpi = GetDpiForWindow(g_app.hwnd) / 96.0f;

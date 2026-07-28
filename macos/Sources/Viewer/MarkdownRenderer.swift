@@ -4,18 +4,18 @@ import Markdown
 extension NSAttributedString.Key {
     /// Marks code-block paragraphs so the viewer draws a full-width background
     /// behind them (see CodeBlockLayoutFragment).
-    static let mrmarkCodeBlock = NSAttributedString.Key("mrmark.codeBlock")
+    static let markpadCodeBlock = NSAttributedString.Key("markpad.codeBlock")
     /// On a task-list checkbox glyph: the 1-based source line it toggles.
-    static let mrmarkCheckboxLine = NSAttributedString.Key("mrmark.checkboxLine")
+    static let markpadCheckboxLine = NSAttributedString.Key("markpad.checkboxLine")
     /// On a fenced code block's first/last line: which rounded edge to draw
     /// (a `CodeBlockEdge` raw value). Absent on interior lines.
-    static let mrmarkCodeBlockEdge = NSAttributedString.Key("mrmark.codeBlockEdge")
+    static let markpadCodeBlockEdge = NSAttributedString.Key("markpad.codeBlockEdge")
     /// On a fenced code block's first line: the fence info string (language).
-    static let mrmarkCodeLanguage = NSAttributedString.Key("mrmark.codeLanguage")
+    static let markpadCodeLanguage = NSAttributedString.Key("markpad.codeLanguage")
     /// On a fenced code block's first line: marks the copy button. The button
-    /// copies the enclosing `.mrmarkCodeBlock` run out of the text storage, so
+    /// copies the enclosing `.markpadCodeBlock` run out of the text storage, so
     /// the code text isn't stored a second time here.
-    static let mrmarkCodeCopy = NSAttributedString.Key("mrmark.codeCopy")
+    static let markpadCodeCopy = NSAttributedString.Key("markpad.codeCopy")
 }
 
 /// Deepest block nesting we let reach swift-markdown. Its parser recurses once
@@ -272,7 +272,7 @@ final class MarkdownRenderer {
             let tail: CGFloat = -16
             var attributes = bodyAttributes
             attributes[.font] = codeFont
-            attributes[.mrmarkCodeBlock] = true
+            attributes[.markpadCodeBlock] = true
             attributes[.paragraphStyle] = Style.paragraph(spacing: 0, indent: indent, tailIndent: tail)
             let code = codeBlock.code.hasSuffix("\n") ? String(codeBlock.code.dropLast()) : codeBlock.code
             let block = NSMutableAttributedString(string: code, attributes: attributes)
@@ -326,16 +326,16 @@ final class MarkdownRenderer {
             // bottom edge (drawn by the layout fragment). A single-line block
             // is both edges at once.
             block.addAttribute(
-                .mrmarkCodeBlockEdge,
+                .markpadCodeBlockEdge,
                 value: (singleLine ? CodeBlockEdge.both : .top).rawValue,
                 range: firstRange
             )
-            block.addAttribute(.mrmarkCodeCopy, value: true, range: firstRange)
+            block.addAttribute(.markpadCodeCopy, value: true, range: firstRange)
             if let language = codeBlock.language, !language.isEmpty {
-                block.addAttribute(.mrmarkCodeLanguage, value: language, range: firstRange)
+                block.addAttribute(.markpadCodeLanguage, value: language, range: firstRange)
             }
             if !singleLine {
-                block.addAttribute(.mrmarkCodeBlockEdge, value: CodeBlockEdge.bottom.rawValue, range: lastRange)
+                block.addAttribute(.markpadCodeBlockEdge, value: CodeBlockEdge.bottom.rawValue, range: lastRange)
             }
             return block
 
@@ -410,7 +410,7 @@ final class MarkdownRenderer {
                 prefixAttributes[.foregroundColor] = NSColor.secondaryLabelColor
             }
             if item.checkbox != nil, let sourceLine = item.range?.lowerBound.line {
-                prefixAttributes[.mrmarkCheckboxLine] = sourceLine + checkboxLineOffset
+                prefixAttributes[.markpadCheckboxLine] = sourceLine + checkboxLineOffset
             }
 
             let line = NSMutableAttributedString(string: prefix, attributes: prefixAttributes)

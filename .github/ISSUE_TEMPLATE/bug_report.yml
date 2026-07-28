@@ -17,7 +17,7 @@ body:
   - type: input
     id: app-version
     attributes:
-      label: MrMark version
+      label: MarkPad version
       description: Shown in the About dialog.
       placeholder: 0.1.0
     validations:

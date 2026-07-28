@@ -1,7 +1,7 @@
 version: 2
 updates:
   # Note: Swift dependencies are managed through the Xcode project
-  # (macos/MrMark.xcodeproj), which Dependabot's swift ecosystem does not
+  # (macos/MarkPad.xcodeproj), which Dependabot's swift ecosystem does not
   # support — it requires a Package.swift manifest at the configured
   # directory. Update SPM packages manually via Xcode.
   - package-ecosystem: github-actions

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>MrMark</string>
+	<string>MarkPad</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -20,7 +20,7 @@
 				<string>net.daringfireball.markdown</string>
 			</array>
 			<key>NSDocumentClass</key>
-			<string>MrMark.MarkdownDocument</string>
+			<string>MarkPad.MarkdownDocument</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -30,7 +30,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>MrMark</string>
+	<string>MarkPad</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -40,7 +40,7 @@
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>MIT License © 2026 Jongsic and MrMark contributors</string>
+	<string>MIT License © 2026 Jongsic and MarkPad contributors</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSSupportsAutomaticTermination</key>

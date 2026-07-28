@@ -40,8 +40,8 @@ final class ViewerTextView: NSTextView {
               let paragraph = fragment.textElement as? NSTextParagraph,
               paragraph.attributedString.length > 0 else { return nil }
         let attributes = paragraph.attributedString.attributes(at: 0, effectiveRange: nil)
-        guard attributes[.mrmarkCodeCopy] != nil,
-              let raw = attributes[.mrmarkCodeBlockEdge] as? Int,
+        guard attributes[.markpadCodeCopy] != nil,
+              let raw = attributes[.markpadCodeBlockEdge] as? Int,
               let edge = CodeBlockEdge(rawValue: raw), edge.hasTop else { return nil }
 
         // The fragment's box in container coordinates (the fragment computes
@@ -71,18 +71,18 @@ final class ViewerTextView: NSTextView {
         return (
             code,
             button.offsetBy(dx: textContainerOrigin.x, dy: textContainerOrigin.y),
-            attributes[.mrmarkCodeLanguage] as? String
+            attributes[.markpadCodeLanguage] as? String
         )
     }
 
     /// The full text of the fenced code block containing `index`: the longest
-    /// contiguous `.mrmarkCodeBlock` run in the storage. The newline joining
+    /// contiguous `.markpadCodeBlock` run in the storage. The newline joining
     /// adjacent blocks never carries the attribute, so two blocks can't merge.
     static func codeBlockText(in storage: NSAttributedString, at index: Int) -> String? {
         guard index >= 0, index < storage.length else { return nil }
         var range = NSRange()
         guard storage.attribute(
-            .mrmarkCodeBlock,
+            .markpadCodeBlock,
             at: index,
             longestEffectiveRange: &range,
             in: NSRange(location: 0, length: storage.length)
@@ -90,7 +90,7 @@ final class ViewerTextView: NSTextView {
         return storage.attributedSubstring(from: range).string
     }
 
-    private static let copiedFeedbackID = NSUserInterfaceItemIdentifier("mrmark.copiedFeedback")
+    private static let copiedFeedbackID = NSUserInterfaceItemIdentifier("markpad.copiedFeedback")
 
     /// Brief "Copied" confirmation that fades out in place of the language
     /// badge. Opaque and sized to span the badge — the layout fragment keeps
@@ -143,7 +143,7 @@ final class ViewerTextView: NSTextView {
         // The insertion index sits between characters; the glyph that was
         // clicked can be on either side of it.
         for index in [insertionIndex, insertionIndex - 1] where index >= 0 && index < storage.length {
-            if let line = storage.attribute(.mrmarkCheckboxLine, at: index, effectiveRange: nil) as? Int {
+            if let line = storage.attribute(.markpadCheckboxLine, at: index, effectiveRange: nil) as? Int {
                 return line
             }
         }

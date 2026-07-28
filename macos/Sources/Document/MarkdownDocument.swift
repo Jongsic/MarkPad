@@ -89,7 +89,7 @@ final class MarkdownDocument: NSDocument {
         let renderer = MarkdownRenderer(baseURL: fileURL?.deletingLastPathComponent())
         let content = NSMutableAttributedString(attributedString: renderer.render(text))
         content.enumerateAttribute(
-            .mrmarkCodeBlock,
+            .markpadCodeBlock,
             in: NSRange(location: 0, length: content.length)
         ) { value, range, _ in
             guard value != nil else { return }

@@ -1,5 +1,5 @@
 ---
-title: MrMark Feature Tour
+title: MarkPad Feature Tour
 tags:
 - markdown
 - viewer
@@ -9,9 +9,9 @@ updated: 2026-07-10
 note: "values with a colon: and a [x] checkbox-looking bit survive as-is"
 ---
 
-# MrMark Feature Tour
+# MarkPad Feature Tour
 
-A single document that exercises everything MrMark renders. Open it in the
+A single document that exercises everything MarkPad renders. Open it in the
 viewer, then hit **Edit** and try the same constructs in the editor. Useful
 for manual QA before a release — keep it in sync with what the renderer
 supports.
@@ -86,12 +86,12 @@ Plain fenced block with no language.
 
 ## Links & images
 
-- Inline link: [MrMark on GitHub](https://github.com/Jongsic/MrMark)
+- Inline link: [MarkPad on GitHub](https://github.com/Jongsic/MarkPad)
 - Link with unicode text: [한국어 링크 텍스트](https://example.com/경로?쿼리=값)
 - Autolink: <https://www.example.com>
 - Local image (renders inline):
 
-![MrMark icon](design/M.png)
+![MarkPad icon](design/M.png)
 
 - Remote image (never fetched — shown as a link by design):
 

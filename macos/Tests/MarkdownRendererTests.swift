@@ -1,4 +1,4 @@
-@testable import MrMark
+@testable import MarkPad
 import XCTest
 
 final class MarkdownRendererTests: XCTestCase {
@@ -43,30 +43,30 @@ final class MarkdownRendererTests: XCTestCase {
 
         // Every code line is marked for the full-width background fragment.
         for needle in ["first", "middle", "last"] {
-            XCTAssertNotNil(attributes(of: rendered, containing: needle)[.mrmarkCodeBlock], needle)
+            XCTAssertNotNil(attributes(of: rendered, containing: needle)[.markpadCodeBlock], needle)
         }
-        XCTAssertNil(attributes(of: rendered, containing: "after")[.mrmarkCodeBlock])
+        XCTAssertNil(attributes(of: rendered, containing: "after")[.markpadCodeBlock])
     }
 
     func testCodeBlockCarriesEdgeLanguageAndCopyMarkers() {
         let rendered = renderer.render("```swift\nlet a = 1\nlet b = 2\n```\n\nafter")
 
         let first = attributes(of: rendered, containing: "let a = 1")
-        XCTAssertEqual(first[.mrmarkCodeBlockEdge] as? Int, CodeBlockEdge.top.rawValue)
-        XCTAssertEqual(first[.mrmarkCodeLanguage] as? String, "swift")
-        XCTAssertNotNil(first[.mrmarkCodeCopy])
+        XCTAssertEqual(first[.markpadCodeBlockEdge] as? Int, CodeBlockEdge.top.rawValue)
+        XCTAssertEqual(first[.markpadCodeLanguage] as? String, "swift")
+        XCTAssertNotNil(first[.markpadCodeCopy])
 
         let last = attributes(of: rendered, containing: "let b = 2")
-        XCTAssertEqual(last[.mrmarkCodeBlockEdge] as? Int, CodeBlockEdge.bottom.rawValue)
-        XCTAssertNil(last[.mrmarkCodeLanguage])
-        XCTAssertNil(last[.mrmarkCodeCopy])
+        XCTAssertEqual(last[.markpadCodeBlockEdge] as? Int, CodeBlockEdge.bottom.rawValue)
+        XCTAssertNil(last[.markpadCodeLanguage])
+        XCTAssertNil(last[.markpadCodeCopy])
     }
 
     func testSingleLineCodeBlockIsBothEdges() {
         let rendered = renderer.render("```\nonly line\n```")
         let attrs = attributes(of: rendered, containing: "only line")
-        XCTAssertEqual(attrs[.mrmarkCodeBlockEdge] as? Int, CodeBlockEdge.both.rawValue)
-        XCTAssertNotNil(attrs[.mrmarkCodeCopy])
+        XCTAssertEqual(attrs[.markpadCodeBlockEdge] as? Int, CodeBlockEdge.both.rawValue)
+        XCTAssertNotNil(attrs[.markpadCodeCopy])
     }
 
     func testCodeBlockWithBlankFirstLineKeepsEdgeAndCopyMarkers() {
@@ -76,11 +76,11 @@ final class MarkdownRendererTests: XCTestCase {
         // zero-length range (which silently drops the box top and the button).
         let blankFirst = (rendered.string as NSString).range(of: "\nlet a = 1").location
         let attrs = rendered.attributes(at: blankFirst, effectiveRange: nil)
-        XCTAssertEqual(attrs[.mrmarkCodeBlockEdge] as? Int, CodeBlockEdge.top.rawValue)
-        XCTAssertNotNil(attrs[.mrmarkCodeCopy])
-        XCTAssertEqual(attrs[.mrmarkCodeLanguage] as? String, "swift")
+        XCTAssertEqual(attrs[.markpadCodeBlockEdge] as? Int, CodeBlockEdge.top.rawValue)
+        XCTAssertNotNil(attrs[.markpadCodeCopy])
+        XCTAssertEqual(attrs[.markpadCodeLanguage] as? String, "swift")
         XCTAssertEqual(
-            attributes(of: rendered, containing: "let a = 1")[.mrmarkCodeBlockEdge] as? Int,
+            attributes(of: rendered, containing: "let a = 1")[.markpadCodeBlockEdge] as? Int,
             CodeBlockEdge.bottom.rawValue
         )
     }
@@ -90,7 +90,7 @@ final class MarkdownRendererTests: XCTestCase {
         // paragraph, so it carries both edges.
         let single = renderer.render("```\nlet a = 1\n\n```")
         XCTAssertEqual(
-            attributes(of: single, containing: "let a = 1")[.mrmarkCodeBlockEdge] as? Int,
+            attributes(of: single, containing: "let a = 1")[.markpadCodeBlockEdge] as? Int,
             CodeBlockEdge.both.rawValue
         )
 
@@ -98,11 +98,11 @@ final class MarkdownRendererTests: XCTestCase {
         // the last paragraph that owns characters, not past the final newline.
         let multi = renderer.render("```\nfirst\nsecond\n\n```")
         XCTAssertEqual(
-            attributes(of: multi, containing: "first")[.mrmarkCodeBlockEdge] as? Int,
+            attributes(of: multi, containing: "first")[.markpadCodeBlockEdge] as? Int,
             CodeBlockEdge.top.rawValue
         )
         XCTAssertEqual(
-            attributes(of: multi, containing: "second")[.mrmarkCodeBlockEdge] as? Int,
+            attributes(of: multi, containing: "second")[.markpadCodeBlockEdge] as? Int,
             CodeBlockEdge.bottom.rawValue
         )
     }
@@ -151,8 +151,8 @@ final class MarkdownRendererTests: XCTestCase {
         let rendered = renderer.render("---\ntitle: x\n---\n\n- [ ] first\n- [x] second")
         // Lines are 1-based in the *original* document — toggling edits the
         // original text, and the parser only ever saw the peeled body.
-        XCTAssertEqual(attributes(of: rendered, containing: "☐")[.mrmarkCheckboxLine] as? Int, 5)
-        XCTAssertEqual(attributes(of: rendered, containing: "☑")[.mrmarkCheckboxLine] as? Int, 6)
+        XCTAssertEqual(attributes(of: rendered, containing: "☐")[.markpadCheckboxLine] as? Int, 5)
+        XCTAssertEqual(attributes(of: rendered, containing: "☑")[.markpadCheckboxLine] as? Int, 6)
     }
 
     func testFrontmatterRendersAsPropertiesNotHeading() throws {
@@ -194,9 +194,9 @@ final class MarkdownRendererTests: XCTestCase {
 
     func testCheckboxGlyphsCarryTheirSourceLine() {
         let rendered = renderer.render("# Title\n\n- [ ] first\n- [x] second\n- plain bullet")
-        XCTAssertEqual(attributes(of: rendered, containing: "☐")[.mrmarkCheckboxLine] as? Int, 3)
-        XCTAssertEqual(attributes(of: rendered, containing: "☑")[.mrmarkCheckboxLine] as? Int, 4)
-        XCTAssertNil(attributes(of: rendered, containing: "•")[.mrmarkCheckboxLine])
+        XCTAssertEqual(attributes(of: rendered, containing: "☐")[.markpadCheckboxLine] as? Int, 3)
+        XCTAssertEqual(attributes(of: rendered, containing: "☑")[.markpadCheckboxLine] as? Int, 4)
+        XCTAssertNil(attributes(of: rendered, containing: "•")[.markpadCheckboxLine])
     }
 
     func testLinkGetsLinkAttribute() {
@@ -206,8 +206,8 @@ final class MarkdownRendererTests: XCTestCase {
     }
 
     func testInlineCodeAndCodeBlockUseMonospacedFont() {
-        let rendered = renderer.render("run `mrmark`\n\n```\nlet x = 1\n```")
-        let inlineFont = attributes(of: rendered, containing: "mrmark")[.font] as? NSFont
+        let rendered = renderer.render("run `markpad`\n\n```\nlet x = 1\n```")
+        let inlineFont = attributes(of: rendered, containing: "markpad")[.font] as? NSFont
         let blockFont = attributes(of: rendered, containing: "let x = 1")[.font] as? NSFont
 
         XCTAssertTrue(inlineFont?.fontDescriptor.symbolicTraits.contains(.monoSpace) ?? false)
